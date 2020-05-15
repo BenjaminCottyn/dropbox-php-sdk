@@ -49,6 +49,7 @@ class Dropbox
      * @const string
      */
     const METADATA_HEADER = 'Dropbox-Api-Result';
+    const METADATA_HEADER_2 = 'dropbox-api-result';
 
     /**
      * The Dropbox App
@@ -1151,6 +1152,19 @@ class Dropbox
         if (isset($headers[static::METADATA_HEADER])) {
             //File Metadata
             $data = $headers[static::METADATA_HEADER];
+
+            //The metadata is present in the first index
+            //of the metadata response header array
+            if (is_array($data) && isset($data[0])) {
+                $data = $data[0];
+            }
+
+            //Since the metadata is returned as a json string
+            //it needs to be decoded into an associative array
+            $metadata = json_decode((string)$data, true);
+        } elseif (isset($headers[static::METADATA_HEADER_2])) {
+            //File Metadata
+            $data = $headers[static::METADATA_HEADER_2];
 
             //The metadata is present in the first index
             //of the metadata response header array
